@@ -1,4 +1,4 @@
-#!/usr/local/munki/python
+#!/usr/bin/python
 
 # Kai Howells
 # kai@automatica.com.au
