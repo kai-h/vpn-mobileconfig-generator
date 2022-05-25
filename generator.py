@@ -11,7 +11,7 @@ import optparse
 from munkilib import FoundationPlist
 
 
-def build_plist(sharedSecret, username, password, company, server):
+def build_plist(sharedSecret, username, password, company, server, override):
 
 	uuidOne = str(uuid.uuid4())
 	uuidTwo = str(uuid.uuid4())
@@ -30,7 +30,7 @@ def build_plist(sharedSecret, username, password, company, server):
 					SharedSecret = sharedSecret
 					),
 				IPv4 = dict(
-					OverridePrimary = False,
+					OverridePrimary = override,
 					),
 				PPP = dict(
 					AuthName = username,
@@ -87,6 +87,8 @@ def main():
 	                  help='The company name for the generated Configuration Profile.')
 	parser.add_option('--vpn', '-v',
 	                  help='The IP Address or hostname of the VPN Endpoint.')
+	parser.add_option('--override', '-o', action="store_true", dest="override",
+	                  help='Configures the VPN to send all network traffic through this connection')
 	
 	if len(sys.argv) == 1:
 		parser.print_usage()
@@ -103,6 +105,10 @@ def main():
 	password = options.password
 	company = options.company
 	server = options.vpn
+	override = options.override
+
+	if override != True:
+		override = False
 
 	mobileConfig = None
 	if arguments:
@@ -112,7 +118,7 @@ def main():
 
 	print ("Created Configuration Profile: " + mobileConfig)
 
-	plist = build_plist(sharedSecret, username, password, company, server)
+	plist = build_plist(sharedSecret, username, password, company, server, override)
 	write_plist(plist,mobileConfig)
 
 if __name__ == '__main__':
